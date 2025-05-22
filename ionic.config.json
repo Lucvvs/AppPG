@@ -1,0 +1,7 @@
+{
+  "name": "AppPG",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
