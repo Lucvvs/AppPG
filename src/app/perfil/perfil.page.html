@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- boton atras-->
+    <button mat-icon-button class="volver-btn" (click)="volverAtras()" slot="start">
+  <mat-icon>arrow_back</mat-icon>
+</button>
+
+    <!-- logo eskeletor -->
+    <span class="toolbar-content">
+      <img src="assets/img/logo.png" alt="Logo" class="logo-img">
+      <ion-title>Skeleton App</ion-title>
+    </span>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <mat-card class="perfil-card">
+<h2 class="titulo-perfil aparecer">Resumen de Usuario</h2>
+
+    <p><strong>Usuario:</strong> {{ datosUsuario.usuario | titlecase }}</p>
+    <p><strong>Contraseña:</strong> {{ datosUsuario.contrasena }}</p>
+    <p><strong>Nombre:</strong> {{ datosUsuario.nombre | titlecase }}</p>
+    <p><strong>Apellido:</strong> {{ datosUsuario.apellido | titlecase }}</p>
+    <p><strong>Nivel educacional:</strong> {{ datosUsuario.educacion }}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{ datosUsuario.fechaNacimiento }}</p>
+  </mat-card>
+</ion-content>

@@ -1,0 +1,62 @@
+
+
+
+
+ion-toolbar {
+  --background: #3f51b5;
+  --color: white;
+  font-weight: bold;
+}
+
+.perfil-card {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.titulo-perfil {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #afb7ff;
+}
+
+.aparecer {
+  animation: aparecer 0.6s ease-in-out;
+}
+
+@keyframes aparecer {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-img {
+  height: 50px;
+  width: auto;
+  border-radius: 5px;
+}
+
+.volver-btn {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.volver-btn .mat-icon {
+  color: white !important;
+}
+

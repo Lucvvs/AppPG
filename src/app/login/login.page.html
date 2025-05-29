@@ -1,23 +1,64 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Iniciar Sesión</ion-title>
+  <ion-toolbar color="primary">
+    <!-- boton atras-->
+    <button mat-icon-button slot="start" (click)="volverAtras()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <!-- logo eskeletor -->
+    <span class="toolbar-content">
+      <img src="assets/img/logo.png" alt="Logo" class="logo-img">
+      <ion-title>Skeleton App</ion-title>
+    </span>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form (ngSubmit)="login()" #loginForm="ngForm">
-    <ion-item>
-      <ion-label position="floating">Correo</ion-label>
-      <ion-input type="email" [(ngModel)]="correo" name="correo" required></ion-input>
-    </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" [(ngModel)]="contrasena" name="contrasena" required></ion-input>
-    </ion-item>
+  <mat-card class="login-card">
+    <h1 class="titulo aparecer">Skeleton</h1>
+    <div class="subtitulo-wrapper">
+ <div class="subtitulo-wrapper">
+  <span class="maquina" id="maquina-texto"></span><span class="cursor">|</span>
+</div>
+</div>
+    <h2 class="bienvenido">¡Bienvenido!</h2>
 
-    <ion-button expand="block" type="submit" [disabled]="!loginForm.form.valid">
-      Entrar
-    </ion-button>
-  </form>
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="usuario" autocomplete="off" />
+        <mat-error *ngIf="loginForm.get('usuario')?.hasError('required')">
+          Campo obligatorio
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('usuario')?.hasError('minlength')">
+          Mínimo 3 caracteres
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('usuario')?.hasError('maxlength')">
+          Máximo 8 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Contraseña (4 dígitos)</mat-label>
+        <input matInput type="password" formControlName="contrasena" autocomplete="off" />
+        <mat-error *ngIf="loginForm.get('contrasena')?.hasError('required')">
+          Campo obligatorio
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('contrasena')?.hasError('pattern')">
+          Debe tener 4 dígitos numéricos
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width" type="submit">
+        Entrar
+      </button>
+    </form>
+
+    <div class="registro-link">
+      <a href="#">Completa los campos e inicia tu registro</a>
+    </div>
+  </mat-card>
+
 </ion-content>

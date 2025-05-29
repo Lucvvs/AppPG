@@ -1,38 +1,102 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { IonicModule, AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+
+
+// Angular Material Modules
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonInput, IonItem, IonLabel } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
   standalone: true,
   imports: [
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButton,
-    IonInput,
-    IonItem,
-    IonLabel,
     CommonModule,
-    FormsModule
-  ]
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule
+  ],
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements AfterViewInit {
+  loginForm: FormGroup;
 
-  correo: string = '';
-  contrasena: string = '';
+  constructor(
+    private fb: FormBuilder,
+    private alertCtrl: AlertController,
+    private router: Router,
+    private location: Location 
+  ) {
+    this.loginForm = this.fb.group({
+      usuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(8)]],
+      contrasena: ['', [Validators.required, Validators.pattern(/^[0-9]{4}$/)]],
+    });
+  }
 
-  constructor() { }
+  async login() {
+    if (this.loginForm.invalid) {
+      const alert = await this.alertCtrl.create({
+        header: 'Error',
+        message: 'Por favor completa los campos correctamente.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
 
-  ngOnInit() {}
+    const alert = await this.alertCtrl.create({
+      header: 'Éxito',
+      message: '¡Inicio de sesión exitoso!',
+      buttons: [{
+        text: 'OK',
+        handler: () => {
+          this.router.navigate(['/home'], {
+            state: { usuario: this.loginForm.value.usuario }
+          });
+        }
+      }]
+    });
+    await alert.present();
+  }
 
-  login() {
-    console.log('Correo:', this.correo);
-    console.log('Contraseña:', this.contrasena);
-    alert('Mi primera app :)');
+  volverAtras() {
+    this.location.back();
+  }
+
+  ngAfterViewInit() {
+    const texto = 'donde todo comienza';
+    const destino = document.getElementById('maquina-texto');
+    const cursor = document.querySelector('.cursor');
+
+    if (!destino || !cursor) return;
+
+    let i = 0;
+    function escribir() {
+      if (!destino) return;
+      if (i < texto.length) {
+        destino.textContent += texto.charAt(i);
+        i++;
+        setTimeout(escribir, 150);
+      } else {
+        setTimeout(() => {
+          if (cursor) cursor.classList.add('oculto');
+        }, 2000);
+      }
+    }
+
+    escribir();
   }
 }

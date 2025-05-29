@@ -1,20 +1,61 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <!-- boton atras-->
+    <button mat-icon-button slot="start" (click)="volverAtras()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <!-- logo eskeletor -->
+    <span class="toolbar-content">
+      <img src="assets/img/logo.png" alt="Logo" class="logo-img">
+      <ion-title>Skeleton App</ion-title>
+    </span>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <mat-card class="home-card">
+
+    <h2 class="bienvenida aparecer">Bienvenido {{ usuario | titlecase }}</h2>
+    <h3>Información Adicional:</h3>
+
+    <form [formGroup]="form">
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="apellido" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nivel de educación</mat-label>
+        <mat-select formControlName="educacion">
+          <mat-option *ngFor="let nivel of nivelesEducacion" [value]="nivel">
+            {{ nivel }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="botones">
+        <button mat-stroked-button color="warn" (click)="limpiar()" type="button">Limpiar</button>
+        <button mat-raised-button color="primary" (click)="mostrarDatos()" [disabled]="form.invalid">
+          Mostrar
+        </button>
+      </div>
+
+    </form>
+
+  </mat-card>
 </ion-content>
