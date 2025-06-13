@@ -1,0 +1,62 @@
+/* Fondo general del componente */
+:host {
+  display: block;
+  padding: 16px;
+}
+
+/* Estilo para los datos del usuario */
+ion-list {
+  background-color: #241d1d;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 8px;
+  margin-bottom: 16px;
+
+  ion-item {
+    --padding-start: 12px;
+    --min-height: 40px;
+    font-size: 14px;
+    --background: #241d1d;
+  }
+
+  ion-label {
+    color: #ffffff;
+
+    strong {
+      color: #007bff;
+    }
+  }
+}
+
+/* Estilo para los títulos de sección */
+ion-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #006a7c;
+}
+
+/* Estilo para las tarjetas */
+ion-card {
+  background-color: #241d1d;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  padding: 12px 16px;
+  width: 100%;
+  max-width: 500px;    // 📏 más ancho que antes (320px)
+  margin: 16px auto;   // 🟢 centrado
+
+  p {
+    font-size: 14px;
+    margin: 4px 0;
+    color: #ffffff;
+
+    strong {
+      color: #007bff;
+    }
+  }
+}
+
+ion-card-content p {
+  margin: 8px 0;
+  line-height: 1.5;
+}

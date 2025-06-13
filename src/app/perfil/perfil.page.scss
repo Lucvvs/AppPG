@@ -1,5 +1,7 @@
 
-
+ion-content {
+  --background: #026ea080; /* 🎨 Cambia este color según tu estilo */
+}
 
 
 ion-toolbar {
@@ -9,18 +11,27 @@ ion-toolbar {
 }
 
 .perfil-card {
-  max-width: 500px;
+  max-width: 320px;
   margin: 20px auto;
-  padding: 20px;
-  font-size: 16px;
-  line-height: 1.7;
-}
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #e0e0e0; // color general del texto
 
-.titulo-perfil {
+  p {
+    margin: 8px 0;
+  }
+
+  strong {
+    color: #007bff; // azul para los títulos
+  }
+
+ .titulo-perfil {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #006a7c;
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 22px;
-  color: #afb7ff;
+}
 }
 
 .aparecer {

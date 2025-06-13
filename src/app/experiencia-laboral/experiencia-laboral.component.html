@@ -1,0 +1,56 @@
+<!-- FORMULARIO -->
+<ion-list>
+  <ion-card-title class="ion-padding">Guardar experiencia</ion-card-title>
+  <ion-item>
+    <ion-label position="floating">Empresa</ion-label>
+    <ion-input [(ngModel)]="experiencia.empresa"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Año Inicio</ion-label>
+    <ion-input type="number" [(ngModel)]="experiencia.anioInicio"></ion-input>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label>Actualmente trabaja aquí</ion-label>
+    <ion-checkbox [(ngModel)]="trabajaActualmente" slot="end"></ion-checkbox>
+  </ion-item>
+
+  <ion-item *ngIf="!trabajaActualmente">
+    <ion-label position="floating">Año Término</ion-label>
+    <ion-input type="number" [(ngModel)]="experiencia.anioTermino"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Cargo</ion-label>
+    <ion-input [(ngModel)]="experiencia.cargo"></ion-input>
+  </ion-item>
+</ion-list>
+
+<!-- BOTÓN -->
+<div class="ion-padding">
+  <ion-button expand="block" color="primary" (click)="agregarExperiencia()">
+    Agregar experiencia
+  </ion-button>
+</div>
+
+<!-- Contenedor para la última experiencia (con título) -->
+<ion-card *ngIf="experiencias.length > 0" class="ion-margin-top">
+  <ion-card-title class="ion-padding titulo-exp">Última experiencia registrada</ion-card-title>
+  <ion-card-content>
+    <p><strong>Empresa:</strong> {{ experiencias[experiencias.length - 1].empresa }}</p>
+    <p><strong>Cargo:</strong> {{ experiencias[experiencias.length - 1].cargo }}</p>
+    <p><strong>Desde:</strong> {{ experiencias[experiencias.length - 1].anioInicio }}</p>
+    <p><strong>Hasta:</strong> {{ experiencias[experiencias.length - 1].anioTermino }}</p>
+  </ion-card-content>
+</ion-card>
+
+<!-- Otras experiencias anteriores (sin título) -->
+<ion-card *ngFor="let exp of experiencias.slice(0, experiencias.length - 1)" class="ion-margin-top">
+  <ion-card-content>
+    <p><strong>Empresa:</strong> {{ exp.empresa }}</p>
+    <p><strong>Cargo:</strong> {{ exp.cargo }}</p>
+    <p><strong>Desde:</strong> {{ exp.anioInicio }}</p>
+    <p><strong>Hasta:</strong> {{ exp.anioTermino }}</p>
+  </ion-card-content>
+</ion-card>

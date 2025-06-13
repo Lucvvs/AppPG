@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- boton atras-->
+    <!-- Botón atrás -->
     <button mat-icon-button class="volver-btn" (click)="volverAtras()" slot="start">
-  <mat-icon>arrow_back</mat-icon>
-</button>
+      <mat-icon>arrow_back</mat-icon>
+    </button>
 
-    <!-- logo eskeletor -->
+    <!-- Logo -->
     <span class="toolbar-content">
       <img src="assets/img/logo.png" alt="Logo" class="logo-img">
       <ion-title>Skeleton App</ion-title>
@@ -14,9 +14,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <mat-card class="perfil-card">
-<h2 class="titulo-perfil aparecer">Resumen de Usuario</h2>
 
+  <mat-card class="perfil-card">
+    <h2 class="titulo-perfil aparecer">Perfil de Usuario</h2>
     <p><strong>Usuario:</strong> {{ datosUsuario.usuario | titlecase }}</p>
     <p><strong>Contraseña:</strong> {{ datosUsuario.contrasena }}</p>
     <p><strong>Nombre:</strong> {{ datosUsuario.nombre | titlecase }}</p>
@@ -24,4 +24,25 @@
     <p><strong>Nivel educacional:</strong> {{ datosUsuario.educacion }}</p>
     <p><strong>Fecha de nacimiento:</strong> {{ datosUsuario.fechaNacimiento }}</p>
   </mat-card>
+
+  <!-- Segment -->
+  <ion-segment [(ngModel)]="segmentValue" class="ion-margin-vertical">
+    <ion-segment-button value="datos">
+      <ion-label>Mis Datos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="experiencia">
+      <ion-label>Experiencia</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="certificaciones">
+      <ion-label>Certificaciones</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Componentes Segmentados -->
+  <div [ngSwitch]="segmentValue" class="ion-padding">
+    <app-mis-datos *ngSwitchCase="'datos'"></app-mis-datos>
+    <app-experiencia-laboral *ngSwitchCase="'experiencia'"></app-experiencia-laboral>
+    <app-certificaciones *ngSwitchCase="'certificaciones'"></app-certificaciones>
+  </div>
+
 </ion-content>
