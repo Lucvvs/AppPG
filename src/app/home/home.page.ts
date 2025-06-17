@@ -61,11 +61,12 @@ export class HomePage {
     this.usuario = history.state?.usuario || history.state?.usuarioTemporal || 'Usuario';
 
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      educacion: ['', Validators.required],
-      fechaNacimiento: ['', Validators.required]
-    });
+  nombre: ['', Validators.required],
+  apellido: ['', Validators.required],
+  educacion: ['', Validators.required],
+  fechaNacimiento: ['', Validators.required],
+  contrasena: [history.state?.contrasenaTemporal || '', [Validators.required, Validators.pattern(/^[0-9]{4}$/)]]
+});
   }
 
   limpiar() {
@@ -73,37 +74,51 @@ export class HomePage {
   }
 
   async mostrarDatos() {
-    const { nombre, apellido, fechaNacimiento, educacion } = this.form.value;
+  const { nombre, apellido, fechaNacimiento, educacion, contrasena } = this.form.value;
 
-    const capitalizar = (texto: string) =>
-      texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+  const capitalizar = (texto: string) =>
+    texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 
-    const fechaFormateada = fechaNacimiento
-      ? new Date(fechaNacimiento).toISOString().substring(0, 10)
-      : '';
+  console.log('🧪 Valor crudo del form.fechaNacimiento:', fechaNacimiento);
 
-    const datosCompletos = {
-      usuario: this.usuario,
-      nombre: capitalizar(nombre),
-      apellido: capitalizar(apellido),
-      fechaNacimiento: fechaFormateada,
-      nivel_educacional: educacion,
-      contrasena: '1234'
-    };
+  let fechaFormateada = '';
 
-    // ⚠️ Verifica si ya existe antes de insertar
-    const existente = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
-    if (!existente) {
-      await this.sqlite.insertarUsuario(datosCompletos);
+  if (fechaNacimiento instanceof Date && !isNaN(fechaNacimiento.getTime())) {
+    fechaFormateada = fechaNacimiento.toISOString().substring(0, 10);
+  } else {
+    try {
+      const parsed = new Date(fechaNacimiento);
+      if (!isNaN(parsed.getTime())) {
+        fechaFormateada = parsed.toISOString().substring(0, 10);
+      }
+    } catch {
+      fechaFormateada = '';
     }
-
-    localStorage.setItem('datosUsuario', JSON.stringify(datosCompletos));
-
-    // ✅ Redirigir al perfil con el usuario
-    this.router.navigate(['/perfil'], {
-      state: { usuario: this.usuario }
-    });
   }
+
+  // mostrar fecha a guaradr en logacat 
+  console.log('📅 Fecha procesada antes de guardar:', fechaFormateada);
+
+  const datosCompletos = {
+  usuario: this.usuario,
+  nombre: capitalizar(nombre),
+  apellido: capitalizar(apellido),
+  fecha_nacimiento: fechaFormateada,
+  nivel_educacional: educacion,
+  contrasena: contrasena 
+};
+
+  const existente = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
+  if (!existente) {
+    await this.sqlite.insertarUsuario(datosCompletos);
+  }
+
+  localStorage.setItem('datosUsuario', JSON.stringify(datosCompletos));
+
+  this.router.navigate(['/perfil'], {
+    state: { usuario: this.usuario }
+  });
+}
 
   volverAtras() {
     this.location.back();

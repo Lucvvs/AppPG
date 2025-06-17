@@ -3,7 +3,7 @@
   padding: 16px;
 }
 
-/* Estilo para el formulario */
+/* Estilo formulario */
 ion-list {
   background-color: #241d1d;
   border-radius: 10px;
@@ -46,7 +46,7 @@ ion-list {
   padding: 6px 12px;
 }
 
-/* Personalización interna del calendario (Shadow DOM) */
+/* Personalización calendario */
 ion-datetime::part(content) {
   background-color: #221919;
   color: white;
@@ -68,7 +68,7 @@ ion-datetime::part(title) {
 
 }
 
-/* Estilo del título */
+
 .titulo-certificaciones {
   font-size: 18px;
   font-weight: bold;
@@ -100,7 +100,7 @@ ion-datetime::part(title) {
   }
 }
 
-/* Botón */
+/* Boton */
 ion-button {
   margin-top: 8px;
   font-weight: bold;
@@ -116,7 +116,7 @@ ion-datetime {
 
 
 .card-certificaciones {
-  background-color: #242020; // 🎨 Fondo oscuro para todo el contenedor
+  background-color: #242020; 
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(255, 255, 255, 0.06);
   color: #ffffff;

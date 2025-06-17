@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonList,
@@ -7,7 +7,6 @@ import {
   IonCard,
   IonCardContent,
   IonCardTitle
-
 } from '@ionic/angular/standalone';
 import { SqliteService } from '../services/sqlite.service';
 
@@ -26,40 +25,46 @@ import { SqliteService } from '../services/sqlite.service';
   templateUrl: './mis-datos.component.html',
   styleUrls: ['./mis-datos.component.scss']
 })
-export class MisDatosComponent implements OnInit {
-  @Input() datosUsuario: any = {}; // viene desde perfil.page.html
+export class MisDatosComponent implements OnChanges {
+  @Input() datosUsuario: any = {};
   cantidadCertificaciones = 0;
   ultimaExperiencia: any = null;
 
   constructor(private sqlite: SqliteService) {}
 
-  async ngOnInit(): Promise<void> {
-    const userId = this.datosUsuario?.id;
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (changes['datosUsuario'] && this.datosUsuario?.id) {
+      const userId = this.datosUsuario.id;
+      console.log(' ID del usuario recibido en MisDatos:', userId);
 
-    if (!userId) {
-      console.warn('❌ No se encontró ID del usuario en el input');
-      return;
-    }
+      try {
+        // Certificaciones
+        const certificaciones = await this.sqlite.obtenerCertificaciones(userId);
+        this.cantidadCertificaciones = certificaciones.length;
+        console.log(` Certificaciones cargadas (${certificaciones.length}):`, certificaciones);
 
-    try {
-      // Certificaciones del usuario
-      const certificaciones = await this.sqlite.obtenerCertificaciones(userId);
-      this.cantidadCertificaciones = certificaciones.length;
+        // Experiencia
+        const experiencias = await this.sqlite.obtenerExperiencias(userId);
+        console.log(` Experiencias cargadas (${experiencias.length}):`, experiencias);
 
-      // Última experiencia laboral (última ingresada)
-      const experiencias = await this.sqlite.obtenerExperiencias(userId);
-      if (experiencias.length > 0) {
-        const ultima = experiencias[experiencias.length - 1];
-        this.ultimaExperiencia = {
-          empresa: ultima.empresa,
-          cargo: ultima.cargo,
-          anioInicio: new Date(ultima.inicio).getFullYear(),
-          anioTermino: new Date(ultima.fin).getFullYear(),
-        };
+        if (experiencias.length > 0) {
+          const ultima = experiencias[experiencias.length - 1];
+          this.ultimaExperiencia = {
+            empresa: ultima.empresa,
+            cargo: ultima.cargo,
+            anioInicio: new Date(ultima.inicio).getFullYear(),
+            anioTermino: new Date(ultima.fin).getFullYear(),
+          };
+          console.log('✅ Última experiencia procesada:', this.ultimaExperiencia);
+        } else {
+          console.log('ℹEl usuario no tiene experiencias registradas');
+        }
+
+      } catch (error) {
+        console.error('❌ Error al cargar datos en MisDatosComponent:', error);
       }
-
-    } catch (error) {
-      console.error('❌ Error al obtener datos desde SQLite:', error);
+    } else {
+      console.warn(' No se recibió ID válido del usuario en MisDatosComponent');
     }
   }
 }

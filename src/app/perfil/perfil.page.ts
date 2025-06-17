@@ -61,25 +61,27 @@ export class PerfilPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // 1. Obtener nombre de usuario desde state o localStorage
-    this.usuario =
-      history.state?.usuario ||
-      history.state?.usuarioTemporal ||
-      JSON.parse(localStorage.getItem('datosUsuario') || '{}')?.usuario ||
-      '';
+  this.usuario =
+    history.state?.usuario ||
+    history.state?.usuarioTemporal ||
+    JSON.parse(localStorage.getItem('datosUsuario') || '{}')?.usuario ||
+    '';
 
-    if (this.usuario) {
-      try {
-        // 2. Obtener datos completos desde SQLite
-        this.datosUsuario = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
-        console.log('✅ Usuario cargado desde SQLite:', this.datosUsuario);
-      } catch (error) {
-        console.error('❌ Error al cargar usuario desde SQLite:', error);
-      }
-    } else {
-      console.warn('⚠️ No se encontró un usuario válido');
+  if (this.usuario) {
+    try {
+      //  Obtener datos de SQLite
+      this.datosUsuario = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
+
+      // Mostrar en consola la fecha 
+      console.log('📅 Fecha registrada en base de datos:', this.datosUsuario.fecha_nacimiento);
+
+    } catch (error) {
+      console.error('❌ Error al cargar usuario desde SQLite:', error);
     }
+  } else {
+    console.warn('⚠️ No se encontró un usuario válido');
   }
+}
 
   volverAtras() {
     this.location.back();

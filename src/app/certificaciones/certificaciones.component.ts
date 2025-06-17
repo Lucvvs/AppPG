@@ -53,7 +53,7 @@ export class CertificacionesComponent implements OnInit {
   constructor(private sqlite: SqliteService) {}
 
   async ngOnInit(): Promise<void> {
-  console.log('📦 datosUsuario en Certificaciones:', this.datosUsuario);
+  console.log('📦 datosUsuario en Certificacione:', this.datosUsuario);
   if (!this.datosUsuario?.id) return;
   await this.sqlite.asegurarConexion();
   await this.cargarCertificaciones();
@@ -69,7 +69,7 @@ export class CertificacionesComponent implements OnInit {
   }
 
   async agregarCertificacion() {
-    console.log('🚀 Método agregarCertificacion ejecutado');
+    console.log('🚀 Metodo agregarCertificacion ejecutado bbien');
 
     if (!this.certificacion.nombre || !this.certificacion.fechaObtencion || !this.datosUsuario?.id) {
       console.warn('⚠️ Faltan datos obligatorios');

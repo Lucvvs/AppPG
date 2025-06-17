@@ -64,7 +64,7 @@ export class ExperienciaLaboralComponent implements OnInit {
         anioTermino: exp.fin ? new Date(exp.fin).getFullYear() : 'Actualidad'
       }));
     } catch (error) {
-      console.error('❌ Error al cargar experiencias:', error);
+      console.error('❌ Error al cargar experienciias:', error);
     }
   }
 
@@ -92,7 +92,7 @@ export class ExperienciaLaboralComponent implements OnInit {
     console.error('❌ Error al guardar experiencia:', error);
   }
 
-  // Limpiar formulario
+  // Limpiar 
   this.experiencia = {
     empresa: '',
     anioInicio: '',

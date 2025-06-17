@@ -33,6 +33,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginPage implements OnInit, AfterViewInit {
   loginForm: FormGroup;
+  mensajeError: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -49,7 +50,6 @@ export class LoginPage implements OnInit, AfterViewInit {
   async ngOnInit() {
     await this.sqlite.asegurarConexion();
 
-    // ⚠️ Solo se inserta si no existe (para evitar duplicados)
     const existente = await this.sqlite.obtenerUsuarioPorNombre('Tomate');
     if (!existente) {
       await this.sqlite.insertarUsuario({
@@ -60,49 +60,53 @@ export class LoginPage implements OnInit, AfterViewInit {
         nivel_educacional: 'Media',
         fecha_nacimiento: '2000-01-01'
       });
-      console.log('✅ Usuario Tomate insertado');
     }
 
     this.loginForm.reset();
+    this.mensajeError = '';
   }
 
   async login() {
-    console.log('🚀 login() ejecutado');
-    console.log('🧪 Formulario válido:', this.loginForm.valid);
-    console.log('🧪 Datos ingresados:', this.loginForm.value);
+  this.mensajeError = '';
 
-    if (this.loginForm.invalid) {
-      console.warn('⚠️ Formulario inválido');
+  if (this.loginForm.invalid) {
+    this.mensajeError = 'Completa correctamente el formulario.';
+    return;
+  }
+
+  const { usuario, contrasena } = this.loginForm.value;
+
+  try {
+    await this.sqlite.asegurarConexion();
+    const user = await this.sqlite.obtenerUsuarioPorNombre(usuario);
+
+    if (!user) {
+      // Usuario no existe registro
+      this.router.navigate(['/home'], {
+        state: {
+          usuarioTemporal: usuario,
+          contrasenaTemporal: contrasena
+        }
+      });
       return;
     }
 
-    const { usuario, contrasena } = this.loginForm.value;
-
-    try {
-      await this.sqlite.asegurarConexion();
-      const user = await this.sqlite.obtenerUsuarioPorNombre(usuario);
-
-      console.log('🔍 Usuario encontrado:', user);
-      console.log('🔐 Contraseña ingresada:', contrasena);
-      console.log('🔐 Contraseña almacenada:', user?.contrasena);
-
-      if (user && user.contrasena === contrasena) {
-        console.log('✅ Contraseña válida, redirigiendo a perfil');
-        this.router.navigate(['/perfil'], { state: { usuario: user } });
-      } else {
-        console.warn('❌ Usuario no encontrado o contraseña incorrecta');
-        this.router.navigate(['/home'], {
-          state: {
-            usuarioTemporal: usuario,
-            contrasenaTemporal: contrasena
-          }
-        });
-      }
-
-    } catch (error) {
-      console.error('❌ Error al buscar usuario o conectar con la base de datos:', error);
+    if (user.contrasena !== contrasena) {
+      // Usuario  clave incorrecta 
+      this.mensajeError = 'La contraseña es incorrecta.';
+      return;
     }
+
+    //  Usuario y contraseña correctosw
+    this.router.navigate(['/perfil'], {
+      state: { usuario: user.usuario }
+    });
+
+  } catch (error) {
+    console.error('❌ Error en login():', error);
+    this.mensajeError = 'Error al conectar con la base de datos.';
   }
+}
 
   volverAtras() {
     this.location.back();

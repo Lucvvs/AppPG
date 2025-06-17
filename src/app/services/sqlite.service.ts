@@ -19,18 +19,16 @@ export class SqliteService {
     this.sqlite = new SQLiteConnection(CapacitorSQLite);
   }
 
-  // ✅ Inicializar la base de datos
+  //  Inicializar bdd
   async initDB(): Promise<void> {
     try {
       if (this.initialized) return;
 
-      // Si ya existía conexión abierta, ciérrala
       const existing = await this.sqlite.isConnection(this.dbName, false);
       if (existing.result) {
         await this.sqlite.closeConnection(this.dbName, false);
       }
 
-      // En móvil: copiar desde assets si existe
       if (Capacitor.getPlatform() !== 'web') {
         try {
           await this.sqlite.checkConnectionsConsistency();
@@ -45,13 +43,12 @@ export class SqliteService {
       await this.db.open();
       await this.createTables();
 
-      // 👇 Precarga usuario "Tomate" si no existe
       const existe = await this.obtenerUsuarioPorNombre('Tomate');
       console.log('👀 Usuario Tomate existe?', existe);
 
       if (!existe) {
         await this.insertarUsuario({
-          usuario: 'Tomate',
+          usuario: 'Test',
           contrasena: '1234',
           nombre: 'Test',
           apellido: 'User',
@@ -126,7 +123,7 @@ export class SqliteService {
     }
   }
 
-  // ============================
+ 
   // USUARIOS
   // ============================
   async insertarUsuario(data: {
@@ -158,7 +155,7 @@ export class SqliteService {
     return result.values?.length ? result.values[0] : null;
   }
 
-  // ============================
+  
   // EXPERIENCIA
   // ============================
   async agregarExperiencia(data: {
@@ -187,7 +184,7 @@ export class SqliteService {
     return result.values || [];
   }
 
-  // ============================
+  
   // CERTIFICACIONES
   // ============================
   async agregarCertificacion(data: {

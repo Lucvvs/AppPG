@@ -50,7 +50,9 @@
           Debe tener 4 dígitos numéricos
         </mat-error>
       </mat-form-field>
-
+<div *ngIf="mensajeError" class="mensaje-error">
+  {{ mensajeError }}
+</div>
       <button mat-raised-button color="primary" class="full-width" type="submit">
   Entrar
 </button>
