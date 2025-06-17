@@ -1,6 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonList, IonItem, IonLabel, IonCard, IonCardContent, IonCardTitle } from '@ionic/angular/standalone';
+import {
+  IonList,
+  IonItem,
+  IonLabel,
+  IonCard,
+  IonCardContent,
+  IonCardTitle
+
+} from '@ionic/angular/standalone';
+import { SqliteService } from '../services/sqlite.service';
 
 @Component({
   selector: 'app-mis-datos',
@@ -18,26 +27,39 @@ import { IonList, IonItem, IonLabel, IonCard, IonCardContent, IonCardTitle } fro
   styleUrls: ['./mis-datos.component.scss']
 })
 export class MisDatosComponent implements OnInit {
-  datosUsuario: any = {};
+  @Input() datosUsuario: any = {}; // viene desde perfil.page.html
   cantidadCertificaciones = 0;
   ultimaExperiencia: any = null;
 
-  ngOnInit(): void {
-    const datos = localStorage.getItem('datosUsuario');
-    if (datos) {
-      this.datosUsuario = JSON.parse(datos);
+  constructor(private sqlite: SqliteService) {}
+
+  async ngOnInit(): Promise<void> {
+    const userId = this.datosUsuario?.id;
+
+    if (!userId) {
+      console.warn('❌ No se encontró ID del usuario en el input');
+      return;
     }
 
-    const certs = localStorage.getItem('certificaciones');
-    if (certs) {
-      const parsed = JSON.parse(certs);
-      this.cantidadCertificaciones = parsed.length;
-    }
+    try {
+      // Certificaciones del usuario
+      const certificaciones = await this.sqlite.obtenerCertificaciones(userId);
+      this.cantidadCertificaciones = certificaciones.length;
 
-    const experiencias = localStorage.getItem('experienciasLaborales');
-    if (experiencias) {
-      const lista = JSON.parse(experiencias);
-      this.ultimaExperiencia = lista[lista.length - 1]; // última agregada
+      // Última experiencia laboral (última ingresada)
+      const experiencias = await this.sqlite.obtenerExperiencias(userId);
+      if (experiencias.length > 0) {
+        const ultima = experiencias[experiencias.length - 1];
+        this.ultimaExperiencia = {
+          empresa: ultima.empresa,
+          cargo: ultima.cargo,
+          anioInicio: new Date(ultima.inicio).getFullYear(),
+          anioTermino: new Date(ultima.fin).getFullYear(),
+        };
+      }
+
+    } catch (error) {
+      console.error('❌ Error al obtener datos desde SQLite:', error);
     }
   }
 }

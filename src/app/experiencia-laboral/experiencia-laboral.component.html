@@ -1,6 +1,7 @@
 <!-- FORMULARIO -->
 <ion-list>
   <ion-card-title class="ion-padding">Guardar experiencia</ion-card-title>
+
   <ion-item>
     <ion-label position="floating">Empresa</ion-label>
     <ion-input [(ngModel)]="experiencia.empresa"></ion-input>
@@ -34,7 +35,7 @@
   </ion-button>
 </div>
 
-<!-- Contenedor para la última experiencia (con título) -->
+<!-- Última experiencia registrada -->
 <ion-card *ngIf="experiencias.length > 0" class="ion-margin-top">
   <ion-card-title class="ion-padding titulo-exp">Última experiencia registrada</ion-card-title>
   <ion-card-content>
@@ -45,7 +46,7 @@
   </ion-card-content>
 </ion-card>
 
-<!-- Otras experiencias anteriores (sin título) -->
+<!-- Experiencias anteriores -->
 <ion-card *ngFor="let exp of experiencias.slice(0, experiencias.length - 1)" class="ion-margin-top">
   <ion-card-content>
     <p><strong>Empresa:</strong> {{ exp.empresa }}</p>

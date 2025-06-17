@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -14,6 +14,7 @@ import {
   IonCardTitle,
   IonCardContent
 } from '@ionic/angular/standalone';
+import { SqliteService } from '../services/sqlite.service';
 
 @Component({
   selector: 'app-certificaciones',
@@ -37,6 +38,8 @@ import {
   styleUrls: ['./certificaciones.component.scss']
 })
 export class CertificacionesComponent implements OnInit {
+  @Input() datosUsuario: any = {};
+
   vence = false;
 
   certificacion = {
@@ -47,26 +50,45 @@ export class CertificacionesComponent implements OnInit {
 
   certificaciones: any[] = [];
 
-  ngOnInit(): void {
-    const guardadas = localStorage.getItem('certificaciones');
-    if (guardadas) {
-      this.certificaciones = JSON.parse(guardadas);
-    }
+  constructor(private sqlite: SqliteService) {}
+
+  async ngOnInit(): Promise<void> {
+  console.log('📦 datosUsuario en Certificaciones:', this.datosUsuario);
+  if (!this.datosUsuario?.id) return;
+  await this.sqlite.asegurarConexion();
+  await this.cargarCertificaciones();
+}
+
+  private async cargarCertificaciones() {
+    const resultado = await this.sqlite.obtenerCertificaciones(this.datosUsuario.id);
+    this.certificaciones = resultado.map(c => ({
+      nombre: c.nombre,
+      fechaObtencion: c.fecha_obtencion,
+      fechaVencimiento: c.fecha_vencimiento || null
+    }));
   }
 
-  agregarCertificacion() {
-    const nueva = { ...this.certificacion };
+  async agregarCertificacion() {
+    console.log('🚀 Método agregarCertificacion ejecutado');
 
-    if (!this.vence) {
-      nueva.fechaVencimiento = 'Sin vencimiento';
+    if (!this.certificacion.nombre || !this.certificacion.fechaObtencion || !this.datosUsuario?.id) {
+      console.warn('⚠️ Faltan datos obligatorios');
+      return;
     }
 
-    this.certificaciones.push(nueva);
+    const nueva = {
+      usuario_id: this.datosUsuario.id,
+      nombre: this.certificacion.nombre.trim(),
+      fecha_obtencion: this.certificacion.fechaObtencion,
+      fecha_vencimiento: this.vence ? this.certificacion.fechaVencimiento : ''
+    };
 
-    // Guardar en localStorage
-    localStorage.setItem('certificaciones', JSON.stringify(this.certificaciones));
+    await this.sqlite.asegurarConexion();
+    await this.sqlite.agregarCertificacion(nueva);
+    await this.cargarCertificaciones();
 
-    // Limpiar formulario
+    console.log('✅ Certificación agregada:', nueva);
+
     this.certificacion = {
       nombre: '',
       fechaObtencion: '',

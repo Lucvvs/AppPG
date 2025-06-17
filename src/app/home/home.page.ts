@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 // Angular Material
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,18 +14,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
+// Servicio SQLite
+import { SqliteService } from '../services/sqlite.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    // Core
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-
-    // Angular Material
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -55,12 +53,12 @@ export class HomePage {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private alertCtrl: AlertController,
     private router: Router,
-    private location: Location
-    
+    private location: Location,
+    private sqlite: SqliteService
   ) {
-    this.usuario = history.state?.usuario || 'Usuario';
+    console.log('🧠 Datos que llegaron a Home:', history.state);
+    this.usuario = history.state?.usuario || history.state?.usuarioTemporal || 'Usuario';
 
     this.form = this.fb.group({
       nombre: ['', Validators.required],
@@ -75,42 +73,39 @@ export class HomePage {
   }
 
   async mostrarDatos() {
-  const { nombre, apellido, fechaNacimiento, educacion } = this.form.value;
+    const { nombre, apellido, fechaNacimiento, educacion } = this.form.value;
 
-  // uppear primera letra
-  const capitalizar = (texto: string) =>
-    texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+    const capitalizar = (texto: string) =>
+      texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 
-  // Datos 
-  const datosCompletos = {
-    usuario: this.usuario,
-    nombre: capitalizar(nombre),
-    apellido: capitalizar(apellido),
-    fechaNacimiento: new Date(fechaNacimiento).toLocaleDateString(),
-    educacion,
-    contrasena: '****' 
-  };
+    const fechaFormateada = fechaNacimiento
+      ? new Date(fechaNacimiento).toISOString().substring(0, 10)
+      : '';
 
-  const alert = await this.alertCtrl.create({
-    header: this.usuario,
-    cssClass: 'custom-alert',
-    message: `Su nombre es: "${datosCompletos.nombre} ${datosCompletos.apellido}"\ny nació el: "${datosCompletos.fechaNacimiento}".`,
-    buttons: [
-      { text: 'Dato incorrecto', role: 'cancel' },
-      {
-        text: 'Confirmar',
-        handler: () => {
-          localStorage.setItem('datosUsuario', JSON.stringify(datosCompletos));
-          this.router.navigate(['/perfil']);
-        }
-      }
-    ]
-  });
+    const datosCompletos = {
+      usuario: this.usuario,
+      nombre: capitalizar(nombre),
+      apellido: capitalizar(apellido),
+      fechaNacimiento: fechaFormateada,
+      nivel_educacional: educacion,
+      contrasena: '1234'
+    };
 
-  await alert.present();
-}
+    // ⚠️ Verifica si ya existe antes de insertar
+    const existente = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
+    if (!existente) {
+      await this.sqlite.insertarUsuario(datosCompletos);
+    }
 
-volverAtras() {
-  this.location.back();
-}
+    localStorage.setItem('datosUsuario', JSON.stringify(datosCompletos));
+
+    // ✅ Redirigir al perfil con el usuario
+    this.router.navigate(['/perfil'], {
+      state: { usuario: this.usuario }
+    });
+  }
+
+  volverAtras() {
+    this.location.back();
+  }
 }

@@ -1,16 +1,23 @@
 <ion-list>
-  <ion-card-title class="ion-padding">Informacion personal</ion-card-title>
+  <ion-card-title class="ion-padding">Información personal</ion-card-title>
+
   <ion-item>
     <ion-label><strong>Nombre:</strong> {{ datosUsuario.nombre | titlecase }}</ion-label>
   </ion-item>
+
   <ion-item>
     <ion-label><strong>Apellido:</strong> {{ datosUsuario.apellido | titlecase }}</ion-label>
   </ion-item>
+
   <ion-item>
-    <ion-label><strong>Nivel educacional:</strong> {{ datosUsuario.educacion }}</ion-label>
+    <ion-label><strong>Nivel educacional:</strong> {{ datosUsuario.nivel_educacional }}</ion-label>  
   </ion-item>
+
   <ion-item>
-    <ion-label><strong>Fecha de nacimiento:</strong> {{ datosUsuario.fechaNacimiento }}</ion-label>
+    <ion-label>
+      <strong>Fecha de nacimiento:</strong>
+      {{ datosUsuario.fecha_nacimiento ? (datosUsuario.fecha_nacimiento | date:'dd-MM-yyyy') : 'No registrada' }}
+    </ion-label>
   </ion-item>
 </ion-list>
 

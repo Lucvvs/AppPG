@@ -37,8 +37,12 @@
     <ng-container *ngFor="let cert of certificaciones">
       <div class="cert-box ion-margin-bottom">
         <p><strong>Nombre:</strong> {{ cert.nombre }}</p>
-        <p><strong>Fecha de obtención:</strong> {{ cert.fechaObtencion.slice(0, 10) }}</p>
-        <p><strong>Fecha de vencimiento:</strong> {{ cert.fechaVencimiento.slice(0, 10) }}</p>
+        <p><strong>Fecha de obtención:</strong>
+          {{ cert.fechaObtencion ? (cert.fechaObtencion | date:'dd-MM-yyyy') : '-' }}
+        </p>
+        <p><strong>Fecha de vencimiento:</strong>
+          {{ cert.fechaVencimiento ? (cert.fechaVencimiento | date:'dd-MM-yyyy') : 'Sin caducidad' }}
+        </p>
         <hr />
       </div>
     </ng-container>

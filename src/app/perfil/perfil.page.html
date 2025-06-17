@@ -16,14 +16,26 @@
 <ion-content class="ion-padding">
 
   <mat-card class="perfil-card">
-    <h2 class="titulo-perfil aparecer">Perfil de Usuario</h2>
-    <p><strong>Usuario:</strong> {{ datosUsuario.usuario | titlecase }}</p>
-    <p><strong>Contraseña:</strong> {{ datosUsuario.contrasena }}</p>
-    <p><strong>Nombre:</strong> {{ datosUsuario.nombre | titlecase }}</p>
-    <p><strong>Apellido:</strong> {{ datosUsuario.apellido | titlecase }}</p>
-    <p><strong>Nivel educacional:</strong> {{ datosUsuario.educacion }}</p>
-    <p><strong>Fecha de nacimiento:</strong> {{ datosUsuario.fechaNacimiento }}</p>
-  </mat-card>
+  <h2 class="titulo-perfil aparecer">Perfil de Usuario</h2>
+
+  <p><strong>Usuario:</strong> {{ datosUsuario.usuario | titlecase }}</p>
+  <p><strong>Contraseña:</strong> {{ datosUsuario.contrasena }}</p>
+  <p><strong>Nombre:</strong> {{ datosUsuario.nombre | titlecase }}</p>
+  <p><strong>Apellido:</strong> {{ datosUsuario.apellido | titlecase }}</p>
+  <p><strong>Nivel educacional:</strong> {{ datosUsuario.nivel_educacional }}</p>
+
+  <p>
+    <strong>Fecha de nacimiento:</strong>
+    {{ datosUsuario.fecha_nacimiento ? (datosUsuario.fecha_nacimiento | date:'dd-MM-yyyy') : 'No registrada' }}
+  </p>
+</mat-card>
+
+  <!-- Botón de Desconexión -->
+<div class="ion-padding ion-text-center">
+  <ion-button color="danger" (click)="cerrarSesion()">
+    Desconexión
+  </ion-button>
+</div>
 
   <!-- Segment -->
   <ion-segment [(ngModel)]="segmentValue" class="ion-margin-vertical">
@@ -40,9 +52,9 @@
 
   <!-- Componentes Segmentados -->
   <div [ngSwitch]="segmentValue" class="ion-padding">
-    <app-mis-datos *ngSwitchCase="'datos'"></app-mis-datos>
-    <app-experiencia-laboral *ngSwitchCase="'experiencia'"></app-experiencia-laboral>
-    <app-certificaciones *ngSwitchCase="'certificaciones'"></app-certificaciones>
+    <app-mis-datos *ngSwitchCase="'datos'" [datosUsuario]="datosUsuario"></app-mis-datos>
+    <app-experiencia-laboral *ngSwitchCase="'experiencia'" [datosUsuario]="datosUsuario"></app-experiencia-laboral>
+    <app-certificaciones *ngSwitchCase="'certificaciones'" [datosUsuario]="datosUsuario"></app-certificaciones>
   </div>
 
 </ion-content>

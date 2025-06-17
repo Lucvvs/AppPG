@@ -8,7 +8,8 @@ import {
   IonToolbar,
   IonSegment,
   IonSegmentButton,
-  IonLabel
+  IonLabel,
+  IonButton
 } from '@ionic/angular/standalone';
 import { Location } from '@angular/common';
 
@@ -16,10 +17,14 @@ import { Location } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
-// Componentes nuevos
+// Componentes segmentados
 import { MisDatosComponent } from '../mis-datos/mis-datos.component';
 import { ExperienciaLaboralComponent } from '../experiencia-laboral/experiencia-laboral.component';
 import { CertificacionesComponent } from '../certificaciones/certificaciones.component';
+import { Router } from '@angular/router';
+
+// Servicio SQLite
+import { SqliteService } from '../services/sqlite.service';
 
 @Component({
   selector: 'app-perfil',
@@ -34,6 +39,7 @@ import { CertificacionesComponent } from '../certificaciones/certificaciones.com
     IonLabel,
     CommonModule,
     FormsModule,
+    IonButton,
     MatCardModule,
     MatIconModule,
     MisDatosComponent,
@@ -46,17 +52,42 @@ import { CertificacionesComponent } from '../certificaciones/certificaciones.com
 export class PerfilPage implements OnInit {
   datosUsuario: any = {};
   segmentValue: string = 'datos';
+  usuario: string = '';
 
-  constructor(private location: Location) {}
+  constructor(
+    private location: Location,
+    private router: Router,
+    private sqlite: SqliteService
+  ) {}
 
-  ngOnInit() {
-    const datos = localStorage.getItem('datosUsuario');
-    if (datos) {
-      this.datosUsuario = JSON.parse(datos);
+  async ngOnInit() {
+    // 1. Obtener nombre de usuario desde state o localStorage
+    this.usuario =
+      history.state?.usuario ||
+      history.state?.usuarioTemporal ||
+      JSON.parse(localStorage.getItem('datosUsuario') || '{}')?.usuario ||
+      '';
+
+    if (this.usuario) {
+      try {
+        // 2. Obtener datos completos desde SQLite
+        this.datosUsuario = await this.sqlite.obtenerUsuarioPorNombre(this.usuario);
+        console.log('✅ Usuario cargado desde SQLite:', this.datosUsuario);
+      } catch (error) {
+        console.error('❌ Error al cargar usuario desde SQLite:', error);
+      }
+    } else {
+      console.warn('⚠️ No se encontró un usuario válido');
     }
   }
 
   volverAtras() {
     this.location.back();
+  }
+
+  cerrarSesion() {
+    localStorage.removeItem('datosUsuario');
+    history.replaceState(null, '', '/');
+    this.router.navigateByUrl('/login').then(() => location.reload());
   }
 }

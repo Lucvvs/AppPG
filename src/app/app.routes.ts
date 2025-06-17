@@ -1,15 +1,14 @@
 import { Routes } from '@angular/router';
-import { LoginPage } from './login/login.page';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-  },
-  {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
     path: 'login',
@@ -17,10 +16,6 @@ export const routes: Routes = [
   },
   {
     path: 'perfil',
-    loadComponent: () => import('./perfil/perfil.page').then( m => m.PerfilPage)
-  },
-  {
-    path: 'perfil',
-    loadComponent: () => import('./perfil/perfil.page').then( m => m.PerfilPage)
-  },
+    loadComponent: () => import('./perfil/perfil.page').then((m) => m.PerfilPage)
+  }
 ];

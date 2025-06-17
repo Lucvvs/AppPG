@@ -35,3 +35,14 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+
+[aria-hidden="true"] {
+  pointer-events: none !important;
+}
+
+
+ion-alert {
+  z-index: 9999 !important;
+}
